@@ -45,6 +45,24 @@ import and export.
 
 **Boundaries.** Everything except the four search engines and the candidate target sites runs inside
 the local Electron process. Outbound HTTP(S)/SOCKS traffic is the only thing that crosses it.
+Local file reads and writes happen in the Electron **main** process (`main.js`), not in the renderer.
+
+### Known gaps in the diagram
+
+Two behaviours are deliberately *not* drawn as working flows, because the source does not support
+them as working flows:
+
+- **`time-based` SQLi payloads are not actually timed.** The payload set exists and is selectable,
+  but the scanner explicitly does not measure response delay, so no time-based injection is ever
+  confirmed. The diagram marks this rather than drawing a detection path that does not run.
+- **Proxy liveness is asserted by the UI, not proven by it.** The pool, rotation and cooldown logic
+  are real and sourced; the "live" badge's result handling has no body, so the diagram presents the
+  pool and its leases without claiming a verified liveness check.
+
+The committed diagram also carries two crossing relationship lines (both involving the
+`Parameter Parser → Local Files` export edge). They are a known cosmetic imperfection, not a
+correctness problem: every component, relationship, source citation and boundary is accurate, and
+the automated gates pass.
 
 ---
 
