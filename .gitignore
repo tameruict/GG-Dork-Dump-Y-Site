@@ -19,3 +19,5 @@ release-assets/
 npm-debug.log*
 .DS_Store
 Thumbs.db
+# Windows sandbox ACL diagnosis output (local scratch)
+acl-recovery/
