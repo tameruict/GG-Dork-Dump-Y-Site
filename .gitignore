@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 
 # Build output (release binaries are published via GitHub Releases, not the repo)
@@ -6,7 +6,12 @@ dist/
 build/
 out/
 
-# Archify working folder (generated diagrams + receipts)
+# Release binaries staged for upload as GitHub release assets
+# (published via Releases, never committed to the source tree)
+release-assets/
+
+# Archify working folder (candidate + validation receipts).
+# The delivered diagram itself is committed under docs/diagrams/.
 .archify/
 
 # Logs and local artifacts

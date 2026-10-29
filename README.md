@@ -1,65 +1,206 @@
-# mango-keywords-node
+# GG-Dork-Dump-Y-Site — Mango Keywords v3.5 LTS (Dork Studio)
 
-## Overview
-Desktop application built on Electron providing workflows for search engine dork generation, target file extension management, database-specific query presets, proxy pool management (HTTP/SOCKS4/SOCKS5), live URL verification, multi-engine search scraping (Bing, DuckDuckGo, Yahoo, Google), parameter extraction, and SQL injection vulnerability scanning.
+> Desktop workbench for turning a keyword list into parameterized search dorks, harvesting
+> result URLs from four search engines, and triaging the parameters those URLs expose.
+> Runs as a single offline-first Electron window — no server, no database, no telemetry.
 
-## Interface
-- `main.js`:
-  - `createWindow()`: Initializes the 1320x860 Electron application window and loads `index.html`.
-  - IPC handler `dialog:openFile`: Prompts native file selection for `.txt`, `.csv`, `.list` files and reads content.
-  - IPC handler `dialog:saveFile`: Prompts native file save dialog and writes string data to disk.
-- `renderer.js`:
-  - `S`: Primary application state store tracking keywords, parameters, dork queues, proxy pools, checker states, and scraper collections (`scraperDorks`, `scraperUrls`, `uniqueUrls`, `uniqueDomains`, `stopScraper`).
-  - `buildDorkFromTpl(tpl, kw, pr, ext, sf, xw, dom, v1, v2)`: Compiles formatted search dorks from variable substitutions.
-  - `getCheckedExtensions()`: Resolves active file extension checkboxes.
-  - `getCustomExtensions()`: Parses comma-separated user-defined extensions.
-  - `getSelectedExtensions()`: Combines checked and custom file extensions.
-  - `setCheckedExtensions(list)`: Programmatically updates checkbox selection state.
-  - `hasExtPlaceholder(tpl)`: Checks if a template string contains `{ext}` or `{pt}` tokens.
-  - `normalizeType(t)`: Normalizes protocol strings into `http`, `socks4`, or `socks5`.
-  - `isValidHost(h)`: Validates host IPv4 addresses and domain syntax.
-  - `parseSingleProxy(rawLine, defaultType)`: Deserializes proxy connection strings with optional credentials.
-  - `parseProxyList(text, defaultType)`: Batch deserializer for proxy lists.
-  - `mergeProxies(newList)`: Merges deduplicated proxy records into `S.proxies`.
-  - `refreshProxyUI()`: Updates proxy counter badges and live status indicators.
-  - `renderProxyList()`: Renders the active proxy table rows in DOM.
-  - `agentFor(proxy, timeout)`: Instantiates `HttpProxyAgent`, `HttpsProxyAgent`, or `SocksProxyAgent` instances.
-  - `pickProxy()`: Selects next proxy instance using round-robin or sticky session policies.
-  - `pickProxyForEngine(engineKey)`: Selects active, non-cooldown proxy for a specific engine matching rotation policies or returns null for direct connection.
-  - `checkOneDork(dork, timeout, delay)`: Dispatches validation request for a dork via Axios.
-  - `ScraperEngines`: Modular search engine adapters (`bing`, `ddg`, `yahoo`, `google`) implementing `buildRequest`, `parseResults`, and `isBlocked`.
-  - `normalizeTargetUrl(rawUrl)`: Validates WHATWG URL syntax, enforces HTTP/HTTPS, strips `#hash`, removes search domain self-links, strips tracking parameters (`utm_*`, `fbclid`, `gclid`, `_ga`, `_gl`), and preserves vulnerability fuzzing parameters.
-  - `scrapeOneDorkPage(dork, engineKey, page, timeout, delay)`: Executes search query page request via Axios with `validateStatus: () => true`, applies proxy routing, records engine-specific cooldowns on block detection, and extracts organic result URLs.
-  - `startScraper()`: Orchestrates multi-threaded dork harvesting across selected engines, applies deduplication, batches DOM updates every 100ms, and updates progress metrics.
-  - `detectDB(body)`: Scans response bodies against `DB_SIGS` and `SQL_SIGS` to classify DBMS signatures.
-  - `payloadsFor(mode, dbPref)`: Returns SQL injection probe payloads by injection mode and target database engine.
-  - `openFile()`: Invokes IPC file open or triggers HTML5 fallback input.
-  - `saveFile(data, defaultName)`: Invokes IPC file save or triggers browser download fallback.
-  - `goto(view)`: Switches visible navigation view tab.
-  - `updatePreview()`: Updates real-time preview of compiled dork outputs.
-  - `parseLines(t)`: Utility splitting text into trimmed non-empty lines.
-- `i18n.js`:
-  - `window.MangoI18n`: Multilingual translation manager supporting English, Arabic, Russian, Chinese, and Vietnamese.
+[![Release](https://img.shields.io/github/v/release/tameruict/GG-Dork-Dump-Y-Site?label=release&color=2ea043)](https://github.com/tameruict/GG-Dork-Dump-Y-Site/releases/latest)
+[![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078d4)](#-release--download)
+[![Electron](https://img.shields.io/badge/Electron-44.1.1-47848f)](https://www.electronjs.org/)
+[![License](https://img.shields.io/badge/license-ISC-lightgrey)](#license)
+
+---
+
+## The pipeline at a glance
+
+The whole app is one directed path. Every node below is a real module in this repository, and the
+diagram is generated from the source at the commit it cites.
+
+<a href="docs/diagrams/mango-keywords-pipeline.html">
+  <img src="docs/diagrams/mango-keywords-pipeline.png" alt="Mango Keywords pipeline: Electron shell and Dork Studio UI feed the Dork Builder, which drives the multi-engine Search Scraper; result URLs are normalized, their parameters extracted, and those parameters handed to the vulnerability scanner. The Proxy Pool leases a rotating route to every outbound request." width="100%">
+</a>
+
+**[▶ Open the interactive pipeline diagram](docs/diagrams/mango-keywords-pipeline.html)** — explorable,
+self-contained, with dark/light themes and trace animation. Not measured runtime timings: the diagram
+is an architecture view, not a benchmark.
+
+> If the `.png` above does not render yet, use the HTML link — it is the authoritative artifact.
+
+### How to read that diagram
+
+| # | Stage | What actually happens | Where |
+| :-: | :--- | :--- | :--- |
+| 1 | **Operator** | Pastes a keyword list and picks a dork template in the UI. | `index.html`, `renderer.js` |
+| 2 | **Electron Shell** | Opens the 1320×860 window and serves the two file dialogs over IPC. | `main.js` |
+| 3 | **Dork Studio UI** | Eight side-nav views over one in-memory `S` store; no router, no reload. | `index.html:23-55`, `renderer.js` |
+| 4 | **Dork Builder** | `buildDorkFromTpl()` substitutes `{kw}`, `{param}`, `{ext}` per keyword. | `renderer.js` |
+| 5 | **Search Scraper** | Fans each dork across Bing, DuckDuckGo, Yahoo and Google, one page per engine, deduped. | `renderer.js` |
+| 6 | **URL Normalizer** | `normalizeTargetUrl()` forces HTTP/HTTPS, drops `#hash`, self-links and `utm_*`/`fbclid`/`gclid`/`_ga`/`_gl`. | `renderer.js` |
+| 7 | **Parameter Parser** | Collects the surviving `?key=` names and ranks candidates. | `renderer.js` |
+| 8 | **Vulnerability Scanner** | Sends `payloadsFor()` probes and classifies DBMS error signatures via `detectDB()`. | `renderer.js` |
+
+Supporting, off the main path: a **Proxy Pool** (HTTP/SOCKS4/SOCKS5, round-robin / random / sticky,
+5-minute per-engine cooldown), a **Live Dork Checker**, and **local `.txt`/`.csv`/`.json` files** for
+import and export.
+
+**Boundaries.** Everything except the four search engines and the candidate target sites runs inside
+the local Electron process. Outbound HTTP(S)/SOCKS traffic is the only thing that crosses it.
+
+---
+
+## 📦 Release & download
+
+Prebuilt Windows binaries live under **[Releases](https://github.com/tameruict/GG-Dork-Dump-Y-Site/releases/latest)** —
+they are deliberately kept out of the git history so cloning stays small.
+
+| Asset | What it is | When to pick it |
+| :--- | :--- | :--- |
+| `GG-Dork-Dump-Y-Site-<version>.exe` | Electron **portable** single-file build. No installer, no admin rights. | Fastest start. Double-click and run. |
+| `GG-Dork-Dump-Y-Site-<version>-win-x64.zip` | The unpacked `win-unpacked/` directory. | Antivirus flags single-file packers, or you want to drop in your own `app.asar`. |
+| `SHA256SUMS.txt` | Checksums for every asset above. | Verify your download before running it. |
+
+> **Windows SmartScreen.** The binaries are unsigned, so Windows may show
+> *"Windows protected your PC"* on first launch. Choose **More info → Run anyway**. You can confirm
+> the file is intact first with the checksums:
+>
+> ```powershell
+> Get-FileHash .\GG-Dork-Dump-Y-Site-*.exe -Algorithm SHA256
+> ```
+
+### Build a release yourself
+
+```bash
+npm ci          # exact, lockfile-pinned install
+npm start       # run from source
+npm run build   # electron-builder -> dist/ (portable .exe)
+```
+
+`npm run build` only targets Windows x64. Change `build.win.target` in `package.json` to produce an
+`nsis` installer or a different architecture.
+
+---
+
+## 🧑💻 Source code
+
+```text
+.
+├── main.js               # Electron main process: BrowserWindow + dialog IPC
+├── index.html            # Single-page UI shell, 8 side-nav views
+├── renderer.js           # All application logic: state, dorks, scraper, scanner
+├── i18n.js               # Runtime translations (en, ar, ru, zh, vi)
+├── style.css             # Theme and layout
+├── db_params.txt         # DB-shaped parameter seeds used by Dork Maker
+├── sqli_extensions.txt   # SQLi-prone file extensions (php, asp, aspx, jsp, do, cfm, ...)
+├── docs/
+│   ├── diagrams/         # Archify pipeline diagram embedded above
+│   └── designs/          # Design notes, see docs/designs/SITEMAP.md
+└── package.json          # Scripts, deps, electron-builder config
+```
+
+**Stack:** Electron 44 · Node.js (CommonJS) · axios · `http-proxy-agent` /
+`https-proxy-agent` / `socks-proxy-agent`. No bundler, no framework, no build step for the UI.
+
+**Requirements to run from source:** Node.js 18+ and Windows/macOS/Linux with a desktop session.
+The renderer relies on `nodeIntegration: true` and `contextIsolation: false`, so it only works inside
+the Electron desktop runtime — opening `index.html` in a browser will not bring up the app.
+
+---
+
+## Features
+
+- **Dork Maker** — template compiler with `{kw}`, `{param}`, `{ext}` substitution, checkbox plus
+  custom-extension input, live preview, and DB-shaped parameter seeds from `db_params.txt`.
+- **Multi-engine Scraper** — Bing, DuckDuckGo, Yahoo and Google adapters behind one interface
+  (`buildRequest` / `parseResults` / `isBlocked`), batched DOM updates every 100 ms, deduplicated
+  URLs and domains, per-engine cooldown on `429`/`403`/`999`/CAPTCHA.
+- **Extractors / Cleaners** — URL normalization (tracking-parameter stripping, hash removal,
+  search-engine self-link rejection) and parameter extraction.
+- **Vulnerability Scanner** — injection-mode probe payloads, DBMS fingerprinting from error
+  signatures (MySQL, MSSQL, PostgreSQL, Oracle, SQLite).
+- **Proxy Manager** — bulk paste or file import, deduplication, protocol normalization, latency
+  probing, and per-engine sticky/rotating leases.
+- **Live Dork Checker** — validates generated dorks against a target engine before a full run.
+- **Five UI languages** — English, Arabic, Russian, Chinese, Vietnamese.
+
+---
+
+## Interface reference
+
+### `main.js`
+- `createWindow()` — initializes the 1320×860 window (min 1120×700) and loads `index.html`.
+- IPC `dialog:openFile` — native picker for `.txt`/`.csv`/`.list`, returns `{ path, content }`.
+- IPC `dialog:saveFile` — native save dialog, writes UTF-8 (`txt`/`json`).
+
+### `renderer.js`
+State and dorks: `S` (the single state store), `buildDorkFromTpl()`, `getCheckedExtensions()`,
+`getCustomExtensions()`, `getSelectedExtensions()`, `setCheckedExtensions()`, `hasExtPlaceholder()`.
+
+Proxies: `normalizeType()`, `isValidHost()`, `parseSingleProxy()`, `parseProxyList()`,
+`mergeProxies()`, `refreshProxyUI()`, `renderProxyList()`, `agentFor()`, `pickProxy()`,
+`pickProxyForEngine()`, `checkOneDork()`.
+
+Scraping and normalization: `ScraperEngines`, `normalizeTargetUrl()`, `scrapeOneDorkPage()`,
+`startScraper()`.
+
+Scanning: `detectDB()`, `payloadsFor()`.
+
+Shell and UI: `openFile()`, `saveFile()`, `goto()`, `updatePreview()`, `parseLines()`.
+
+### `i18n.js`
+- `window.MangoI18n` — translation manager with `setLanguage()`, `getLanguage()`, `t()`, `languages`.
+
+---
 
 ## Invariants
-- Proxy records in `S.proxies` must retain valid `id`, `type`, `host`, `port`, and `latency` attributes.
-- Dork generation templates must retain `{kw}` and `{param}` variable markers to produce parameterized queries.
-- Electron context requires `nodeIntegration: true` and `contextIsolation: false` when running under the desktop client runtime.
-- Target URLs submitted to the vulnerability scanner must contain query parameters (`?`).
-- Scraper engine adapters must strictly implement `name`, `tag`, `buildRequest(query, page)`, `parseResults(html)`, and `isBlocked(status, data)`.
-- DuckDuckGo search queries are restricted to depth 1 (`page === 1`).
-- Proxy cooldowns on block detection (`429`, `403`, `999`, CAPTCHA) are isolated per-engine (`proxy.cooldown[engineKey]`) for 300,000ms (5 minutes) without marking healthy proxies as globally dead.
-- Direct mode fallback caps concurrency to 2 threads when the proxy pool `S.proxies` is empty.
-- Normalized scraper URLs must be RFC-compliant HTTP/HTTPS URLs excluding search engine provider domains.
 
-## Side Effects
-- External HTTP, HTTPS, SOCKS4, and SOCKS5 socket connections opened via `axios` and proxy agent drivers.
-- External search engine queries executed against Bing (`bing.com`), DuckDuckGo (`html.duckduckgo.com`), Yahoo (`search.yahoo.com`), and Google (`google.com`).
-- Dynamic proxy cooldown mutations in `proxy.cooldown[engineKey]` and socket dropout dead status flagging.
-- Direct disk reads and writes via Electron `dialog:openFile` and `dialog:saveFile` handlers.
-- Clipboard mutations through `navigator.clipboard.writeText`.
-- DOM mutations across the active view container, progress meters, and notification toasts.
+- Proxy records in `S.proxies` must retain valid `id`, `type`, `host`, `port` and `latency`.
+- Dork templates must keep `{kw}` and `{param}` markers to produce parameterized queries.
+- The Electron runtime requires `nodeIntegration: true` and `contextIsolation: false`.
+- URLs submitted to the scanner must contain query parameters (`?`).
+- Engine adapters must implement `name`, `tag`, `buildRequest(query, page)`, `parseResults(html)`
+  and `isBlocked(status, data)`.
+- DuckDuckGo scraping is restricted to depth 1 (`page === 1`).
+- Block cooldowns are per-engine (`proxy.cooldown[engineKey]`, 300 000 ms) and must not mark a
+  healthy proxy globally dead.
+- With an empty proxy pool, direct mode caps concurrency at 2 threads.
+- Normalized URLs must be RFC-compliant HTTP/HTTPS and must exclude search-provider domains.
+
+## Side effects
+
+- Outbound HTTP/HTTPS/SOCKS4/SOCKS5 sockets via `axios` and the proxy-agent drivers.
+- Search queries sent to `bing.com`, `html.duckduckgo.com`, `search.yahoo.com`, `google.com`.
+- In-memory mutation of `proxy.cooldown[engineKey]` and socket-dropout dead flags.
+- Direct disk reads/writes through the `dialog:openFile` and `dialog:saveFile` IPC handlers.
+- Clipboard writes via `navigator.clipboard.writeText`.
+- DOM mutation across the active view, progress meters and toasts.
+
+---
 
 ## Verification
-- Run: `npm start`
-- Test syntax: `node -c renderer.js`
+
+```bash
+npm ci                       # reproducible install from the lockfile
+node -c renderer.js          # syntax check
+node -c main.js
+npm start                    # launch the desktop app
+```
+
+Regenerating the pipeline diagram is optional and only needed if the pipeline changes; the
+generator writes to `docs/diagrams/`. The committed HTML is self-contained and needs no network.
+
+---
+
+## Responsible use
+
+This tool builds dorks, scrapes public search results and probes URLs for SQL-injection **error
+signatures**. It does not confirm or exploit a vulnerability, and it ships no exploit payloads.
+
+Use it only against systems you own or are explicitly authorized in writing to test. Dorking and
+automated probing of third-party sites without permission may violate computer-misuse law and the
+search engines' terms of service. You are responsible for what you point it at.
+
+## License
+
+Released under the **ISC** license — see `package.json`. Bundled Electron and Chromium components
+retain their own licenses; the packaged build ships `LICENSE.electron.txt` and
+`LICENSES.chromium.html` alongside the binary.
