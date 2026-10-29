@@ -1,0 +1,16 @@
+﻿# Dependencies
+node_modules/
+
+# Build output (release binaries are published via GitHub Releases, not the repo)
+dist/
+build/
+out/
+
+# Archify working folder (generated diagrams + receipts)
+.archify/
+
+# Logs and local artifacts
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

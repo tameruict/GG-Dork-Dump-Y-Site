@@ -1,0 +1,14 @@
+# SQLi-prone extensions — tick trong Dork Maker
+# Ưu tiên CSDL: php, asp, aspx, jsp, do, cfm
+php
+php5
+asp
+aspx
+ashx
+jsp
+jspx
+do
+action
+cfm
+cgi
+pl

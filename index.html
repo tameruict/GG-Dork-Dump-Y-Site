@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mango Keywords v3.5 — Dork Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-text">
+        <div class="brand-name">Mango Keywords</div>
+        <div class="brand-sub"><span class="ver-badge">v3.5 LTS</span><span class="dot"></span><span id="proxy-dot" class="proxy-dot none"></span><span id="sidebar-proxy-count">0 proxy</span></div>
+      </div>
+    </div>
+
+    <div class="side-label">WORKSPACE</div>
+    <nav class="menu">
+      <button class="nav-btn active" data-target="home">
+        <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+        <span>Home</span><span class="nav-hint">Dashboard</span>
+      </button>
+      <button class="nav-btn" data-target="maker">
+        <svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5zM2 12l10 5 10-5M2 17l10 5 10-5"/></svg>
+        <span>Dork Maker</span><span class="nav-count" id="nav-maker-count"></span>
+      </button>
+      <button class="nav-btn" data-target="checker">
+        <svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+        <span>Dork Checker</span><span class="nav-count" id="nav-checker-count"></span>
+      </button>
+      <button class="nav-btn" data-target="scraper" id="nav-scraper">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <span>Search Scraper</span><span class="nav-count" id="nav-scraper-count"></span>
+      </button>
+      <button class="nav-btn" data-target="parser">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm-1 7H7V7h6zm3 7H7v-2h9z"/></svg>
+        <span>Dork Parser</span>
+      </button>
+      <button class="nav-btn" data-target="scanner">
+        <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.2 2.6 5.6.9.9 1.4 2 1.4 3.4h6c0-1.4.5-2.5 1.4-3.4C17.8 13.2 19 11.4 19 9a7 7 0 0 0-7-7zM9 21h6v1a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1z"/></svg>
+        <span>Vuln Scanner</span>
+      </button>
+      <button class="nav-btn" data-target="proxies">
+        <svg viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5zm-2 14-4-4 1.4-1.4L10 12.2l6.6-6.6L18 7z"/></svg>
+        <span>Proxy Manager</span><span class="nav-count accent" id="nav-proxy-count">0</span>
+      </button>
+      <button class="nav-btn" data-target="utils">
+        <svg viewBox="0 0 24 24"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3h-4l-.3 2.6a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.5 7.5 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 1.7 1L11 21h4l.3-2.6a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.4zM13 15a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+        <span>Utilities</span>
+      </button>
+    </nav>
+
+    <div class="side-label">SYSTEM</div>
+    <div class="sys-card">
+      <div class="sys-row"><span>Threads</span><b id="sys-threads">10</b></div>
+      <div class="sys-row"><span>Timeout</span><b id="sys-timeout">8s</b></div>
+      <div class="sys-row"><span>Rotation</span><b id="sys-rotation">round-robin</b></div>
+    </div>
+
+    <div class="side-footer">
+      <div class="login-info"><span class="avatar">A</span><div><div class="login-name">Logged in as Admin</div><div class="login-sub">Local session • offline</div></div></div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 id="page-title">Dashboard</h1>
+        <p id="page-sub">Tổng quan nhanh toàn bộ workflow</p>
+      </div>
+      <div class="stat-strip">
+        <div class="stat"><span class="stat-label">Keywords</span><b id="stat-kw">0</b></div>
+        <div class="stat"><span class="stat-label">Params</span><b id="stat-pr">0</b></div>
+        <div class="stat"><span class="stat-label">Combos</span><b id="stat-combo">0</b></div>
+        <div class="stat highlight"><span class="stat-label">Proxies</span><b id="stat-proxy">0</b><small id="stat-proxy-sub">0 live</small></div>
+        <div class="stat"><span class="stat-label">Generated</span><b id="stat-gen">0</b></div>
+      </div>
+      <div class="top-actions">
+        <button class="btn ghost" id="btn-clear-log">Clear log</button>
+        <button class="btn primary" id="btn-goto-checker">Check dorks →</button>
+      </div>
+    </header>
+
+    <!-- Sub tabs -->
+    <div class="top-nav" id="top-nav">
+      <button class="tab" data-goto="home">AntiPublic</button>
+      <button class="tab active" data-goto="maker">Dork Maker</button>
+      <button class="tab" data-goto="scraper">Scraper</button>
+      <button class="tab" data-goto="parser">Extractors</button>
+      <button class="tab" data-goto="utils">Cleaners</button>
+      <button class="tab" data-goto="proxies">Proxies</button>
+    </div>
+
+    <!-- ===== HOME ===== -->
+    <section id="view-home" class="view active">
+      <div class="grid-3">
+        <div class="card hero">
+          <h3>Bắt đầu nhanh</h3>
+          <p class="muted">3 bước: nạp keywords + params → gen dorks → check live qua proxy.</p>
+          <div class="steps">
+            <div class="step"><b>1</b><div><span>Import Keywords & Params</span><small>File .txt, mỗi dòng 1 mục</small></div><button class="btn small" data-goto="maker">Mở Maker</button></div>
+            <div class="step"><b>2</b><div><span>Nạp proxy HTTP / SOCKS</span><small>Auto-detect, test live, xoay vòng</small></div><button class="btn small" data-goto="proxies">Mở Proxies</button></div>
+            <div class="step"><b>3</b><div><span>Check & xuất working</span><small>Đa luồng, retry, lưu .txt</small></div><button class="btn small" data-goto="checker">Mở Checker</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Trạng thái dữ liệu</h3>
+          <div class="kv"><span>Keywords</span><b id="home-kw">0</b></div>
+          <div class="kv"><span>Parameters</span><b id="home-pr">0</b></div>
+          <div class="kv"><span>Dorks đã gen</span><b id="home-gen">0</b></div>
+          <div class="kv"><span>Dorks working</span><b class="ok" id="home-working">0</b></div>
+          <div class="kv"><span>Proxy / live</span><b><span id="home-proxy">0</span> <small class="muted">/ <span id="home-proxy-live">0</span> live</small></b></div>
+          <div class="progress"><div id="home-progress" style="width:0%"></div></div>
+          <small class="muted" id="home-progress-text">Chưa chạy tác vụ nào</small>
+        </div>
+        <div class="card">
+          <h3>Proxy health</h3>
+          <div class="donut-row">
+            <div class="donut" id="donut"><span id="donut-text">0%</span></div>
+            <div>
+              <div class="kv"><span class="badge http">HTTP</span><b id="home-http">0</b></div>
+              <div class="kv"><span class="badge socks5">SOCKS5</span><b id="home-socks5">0</b></div>
+              <div class="kv"><span class="badge socks4">SOCKS4</span><b id="home-socks4">0</b></div>
+              <div class="kv"><span class="badge bad">Invalid</span><b id="home-invalid">0</b></div>
+            </div>
+          </div>
+          <button class="btn full" data-goto="proxies" style="margin-top:14px">Quản lý proxy</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MAKER ===== -->
+    <section id="view-maker" class="view">
+      <div class="grid-maker">
+        <div class="card">
+          <div class="card-head"><h3>Variables</h3><span class="pill" id="combo-pill">0 combos</span></div>
+          <div class="import-grid">
+            <button class="btn import" id="btn-import-kw">＋ Keywords<small id="kw-status">0 dòng</small></button>
+            <button class="btn import" id="btn-import-param">＋ Parameters<small id="param-status">0 dòng</small></button>
+            <button class="btn import" id="btn-import-kw-clip">⧉ Dán KW<small>clipboard</small></button>
+            <button class="btn import" id="btn-load-default-param">★ Params mẫu<small>1699 params</small></button>
+            <button class="btn import" id="btn-load-db-param" style="border-color:#1f5c3d">★ Params DB (SQLi)<small>~150 params ưu tiên CSDL</small></button>
+            <button class="btn import" id="btn-load-db-ext">★ Ext DB<small>php/asp/jsp/do/cfm</small></button>
+          </div>
+          <div class="field"><label>Template dork <span class="tip" title="Hỗ trợ {kw} {xw} {pr} {param} {sf} {pt} {ext} {dom} {v1} {v2}">?</span></label>
+            <input id="tpl-input" class="input" value="{kw} {sf}.{pt}?{param}=">
+            <div class="tpl-vars">
+              <button data-ins="{kw}">kw</button><button data-ins="{xw}">xw</button><button data-ins="{param}">param</button><button data-ins="{sf}">sf</button><button data-ins="{pt}">pt</button><button data-ins="{ext}">ext</button><button data-ins="{dom}">dom</button><button data-ins="{v1}">v1</button><button data-ins="{v2}">v2</button>
+            </div>
+          </div>
+          <div class="field"><label>Đuôi trang mục tiêu (site url cụ thể) — tick nhiều đuôi để gen hàng loạt</label>
+            <div class="ext-grid" id="ext-grid">
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="php" checked><span>.php</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="php5"><span>.php5</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="asp"><span>.asp</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="aspx"><span>.aspx</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="ashx"><span>.ashx</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="jsp"><span>.jsp</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="jspx"><span>.jspx</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="do"><span>.do</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="action"><span>.action</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="cfm"><span>.cfm</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="cgi"><span>.cgi</span></label>
+              <label class="check ext"><input type="checkbox" class="ext-cb" value="pl"><span>.pl</span></label>
+            </div>
+            <div class="row gap">
+              <input id="custom-ext-input" class="input small" placeholder="Custom thêm: php7,cfml,axd... (cách nhau dấu phẩy)">
+              <button class="btn small ghost" id="btn-ext-all">All</button>
+              <button class="btn small ghost" id="btn-ext-clear">Clear</button>
+              <button class="btn small ghost" id="btn-ext-dbs" title="Chỉ tick đuôi hay dính SQLi (php/asp/aspx/jsp/do/cfm)">Chỉ DB</button>
+            </div>
+            <small class="muted">Gen = keywords × params × đuôi đã tick. Dùng <code>{pt}</code> hoặc <code>{ext}</code> trong template để chèn đuôi. Nếu template không có {pt}/{ext} thì tool tự gắn <code>inurl:.đuôi</code>. Đuôi ưu tiên CSDL: <code>php, asp, aspx, jsp, do, cfm</code>.</small>
+          </div>
+          <div class="field"><label>Preset dork ưu tiên hệ CSDL (1 click là set template + đuôi + sf)</label>
+            <div class="preset-row">
+              <button class="btn small preset" data-preset="mysql">MySQL • .php</button>
+              <button class="btn small preset" data-preset="mssql">MSSQL • .asp(x)</button>
+              <button class="btn small preset" data-preset="pgsql">PGSQL • .php/.jsp</button>
+              <button class="btn small preset" data-preset="oracle">Oracle • .jsp/.do</button>
+              <button class="btn small preset" data-preset="sqlite">SQLite • .php</button>
+              <button class="btn small preset" data-preset="general">General • all</button>
+            </div>
+            <div class="two">
+              <div class="field"><label>DB Engine ưu tiên (gợi ý Scanner)</label>
+                <select id="db-engine" class="input small">
+                  <option value="general" selected>General (tất cả)</option>
+                  <option value="mysql">MySQL / MariaDB</option>
+                  <option value="mssql">MSSQL</option>
+                  <option value="pgsql">PostgreSQL</option>
+                  <option value="oracle">Oracle</option>
+                  <option value="sqlite">SQLite</option>
+                </select>
+              </div>
+              <div class="field"><label>Search operator (sf) preset</label>
+                <select id="sf-preset" class="input small">
+                  <option value="">Tự gõ tay (dùng ô sf bên dưới)</option>
+                  <option value="inurl:">inurl:</option>
+                  <option value="allinurl:">allinurl:</option>
+                  <option value="intext:">intext:</option>
+                  <option value="filetype:php">filetype:</option>
+                  <option value="ext:php">ext:</option>
+                  <option value="intitle:">intitle:</option>
+                  <option value="site:">site: + inurl</option>
+                </select>
+              </div>
+            </div>
+            <small class="muted" id="preset-note">Preset sẽ tự đổi template + tick đuôi + ghi sf phù hợp DB.</small>
+          </div>
+          <div class="two">
+            <div class="field"><label>Search function (sf)</label><input id="sf-input" class="input" placeholder="inurl:"></div>
+            <div class="field"><label>Extra v1</label><input id="v1-input" class="input" placeholder="-intext:php"></div>
+          </div>
+          <div class="two">
+            <div class="field"><label>Xword (xw) — nối thêm</label><input id="xw-input" class="input" placeholder="rỗng"></div>
+            <div class="field"><label>Page type dự phòng (khi không tick đuôi nào)</label><input id="pt-input" class="input" placeholder="php" value="php"></div>
+          </div>
+          <div class="two">
+            <div class="field"><label>Domain (dom)</label><input id="dom-input" class="input" placeholder="rỗng = mọi domain"></div>
+            <div class="field"><label>Extra v2</label><input id="v2-input" class="input" placeholder="rỗng"></div>
+          </div>
+          <div class="preview-box"><div class="preview-label">Preview</div><code id="maker-preview">{kw} {sf}php?{param}=</code></div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h3>Runner</h3><span class="status" id="run-status">Ready</span></div>
+            <div class="field"><label>Số lượng muốn gen (max = tổng combo)</label>
+              <div class="row"><input type="number" id="gen-amount" class="input" value="15000" min="1"><button class="btn small" id="btn-max">MAX</button></div>
+            </div>
+            <div class="radio-row">
+              <label class="radio"><input type="radio" name="order" value="random" checked><span>Random</span></label>
+              <label class="radio"><input type="radio" name="order" value="sequential"><span>Sequential</span></label>
+              <label class="check"><input type="checkbox" id="chk-dedupe" checked><span>Loại trùng</span></label>
+            </div>
+            <div class="progress big"><div id="maker-bar" style="width:0%"></div></div>
+            <div class="muted small" id="progress-text">Generated: 0</div>
+            <div class="row gap">
+              <button id="btn-start" class="btn start">▶ Start</button>
+              <button id="btn-save" class="btn save" disabled>💾 Save</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Kết quả</h3><span class="pill" id="gen-count-pill">0</span></div>
+            <textarea id="maker-output" class="output" readonly placeholder="Dork sẽ hiện ở đây (tối đa 200 dòng preview)…"></textarea>
+            <div class="row gap"><button class="btn small ghost" id="btn-copy-gen">Copy</button><button class="btn small ghost" id="btn-send-checker">Gửi → Checker</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CHECKER ===== -->
+    <section id="view-checker" class="view">
+      <div class="grid-checker">
+        <div class="card">
+          <div class="card-head"><h3>Input & Proxy</h3><span class="pill" id="checker-total-pill">0 dorks</span></div>
+          <div class="row gap">
+            <button class="btn import flex1" id="btn-import-dorks">＋ Dorks<small id="checker-dorks-status">0 dòng</small></button>
+            <button class="btn import flex1" id="btn-use-generated">⇄ Dùng dorks đã gen<small id="use-gen-status">0</small></button>
+          </div>
+          <div class="field"><label>Chế độ proxy</label>
+            <div class="row gap">
+              <select id="proxy-mode" class="input">
+                <option value="auto" selected>Auto-detect (khuyên dùng)</option>
+                <option value="http">Ép HTTP/HTTPS</option>
+                <option value="socks4">Ép SOCKS4</option>
+                <option value="socks5">Ép SOCKS5</option>
+                <option value="noproxy">Không dùng proxy</option>
+              </select>
+              <button class="btn small" id="btn-import-proxies">Import proxy</button>
+            </div>
+            <small class="muted">Hỗ trợ: <code>ip:port</code> • <code>http://ip:port</code> • <code>socks5://ip:port</code> • <code>user:pass@ip:port</code> • <code>ip:port:user:pass</code> • <code>ip:port|user|pass</code></small>
+          </div>
+          <div class="proxy-mini" id="proxy-mini">Chưa có proxy — sẽ chạy direct. <a data-goto="proxies">Mở Proxy Manager</a></div>
+          <div class="grid2">
+            <div class="field"><label>Threads</label><input type="range" id="checker-threads" min="1" max="50" value="10"><b id="threads-val">10</b></div>
+            <div class="field"><label>Timeout (ms)</label><input type="number" id="checker-timeout" class="input" value="8000" step="500"></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Delay mỗi req (ms)</label><input type="number" id="checker-delay" class="input" value="200"></div>
+            <div class="field"><label>Xoay proxy</label>
+              <select id="proxy-rotation" class="input"><option value="round-robin" selected>Round-robin</option><option value="random">Random</option><option value="sticky">Sticky (giữ đến khi lỗi)</option></select>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="chk-retry" checked><span>Retry 1 lần khi lỗi/timeout</span></label>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h3>Runner</h3><span class="status" id="checker-status">Ready</span></div>
+            <div class="progress big"><div id="checker-bar" style="width:0%"></div></div>
+            <div class="meter"><span class="ok" id="checker-working-text">Working: 0</span><span class="bad" id="checker-dead-text">Dead/Blocked: 0</span><span class="muted" id="checker-speed">0 dork/s</span></div>
+            <div class="row gap"><button id="btn-start-checker" class="btn start">▶ Check</button><button id="btn-stop-checker" class="btn danger" disabled>■ Stop</button></div>
+            <button id="btn-save-working" class="btn save" disabled>💾 Save Working Dorks</button>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Live results</h3>
+              <div class="filters"><button class="chip active" data-filter="all">All</button><button class="chip ok" data-filter="working">Working</button><button class="chip bad" data-filter="dead">Dead</button></div>
+            </div>
+            <div id="checker-list" class="result-list"><div class="empty">Chưa có kết quả — hãy import dorks và bấm Check.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SCRAPER ===== -->
+    <section id="view-scraper" class="view">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>Input & Search Engines</h3><span class="pill" id="scraper-total-pill">0 dorks</span></div>
+          <textarea id="scraper-input" class="output" placeholder="Nhập dork hoặc bấm nút nạp bên dưới… (mỗi dòng 1 dork)"></textarea>
+          <div class="row gap">
+            <button class="btn import flex1" id="btn-scraper-file">＋ Import file</button>
+            <button class="btn import flex1" id="btn-scraper-from-maker">⇄ Từ Maker</button>
+            <button class="btn import flex1" id="btn-scraper-from-checker">⇄ Từ Working Checker</button>
+          </div>
+          <div class="field">
+            <label>Search Engines</label>
+            <div class="row wrap gap">
+              <label class="check"><input type="checkbox" id="chk-engine-bing" checked><span>Bing</span></label>
+              <label class="check"><input type="checkbox" id="chk-engine-ddg" checked><span>DuckDuckGo</span></label>
+              <label class="check"><input type="checkbox" id="chk-engine-yahoo" checked><span>Yahoo</span></label>
+              <label class="check"><input type="checkbox" id="chk-engine-google"><span>Google (Experimental)</span></label>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="chk-domain-unique"><span>Chỉ lấy 1 URL cho mỗi domain (Domain Unique)</span></label>
+          <div class="grid2">
+            <div class="field"><label>Threads</label><input type="range" id="scraper-threads" min="1" max="30" value="5"><b id="scraper-threads-val">5</b></div>
+            <div class="field"><label>Số trang mỗi dork (Depth)</label>
+              <select id="scraper-pages" class="input">
+                <option value="1">1 trang (~10 URLs)</option>
+                <option value="2">2 trang (~20 URLs)</option>
+                <option value="3" selected>3 trang (~30 URLs)</option>
+                <option value="5">5 trang (~50 URLs)</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Delay mỗi req (ms)</label><input type="number" id="scraper-delay" class="input" value="300"></div>
+            <div class="field"><label>Timeout (ms)</label><input type="number" id="scraper-timeout" class="input" value="8000" step="500"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Runner</h3><span class="status" id="scraper-status">Ready</span></div>
+          <div class="progress big"><div id="scraper-bar" style="width:0%"></div></div>
+          <div class="meter">
+            <span class="ok" id="stat-scraper-urls">URLs: 0</span>
+            <span class="muted" id="stat-scraper-dorks">Dorks: 0/0</span>
+            <span class="muted" id="stat-scraper-domains">Domains: 0</span>
+            <span class="muted" id="scraper-speed">0 url/s</span>
+          </div>
+          <div class="row gap">
+            <button id="btn-start-scraper" class="btn start flex1">▶ Start Scrape</button>
+            <button id="btn-stop-scraper" class="btn danger" disabled>■ Stop</button>
+            <button id="btn-clear-scraper" class="btn ghost">Clear</button>
+          </div>
+          <div class="row gap">
+            <button id="btn-scraper-save" class="btn save flex1" disabled>💾 Save URLs (.txt)</button>
+            <button id="btn-scraper-to-parser" class="btn small flex1" disabled>→ Gửi sang Parser</button>
+            <button id="btn-scraper-to-scanner" class="btn small flex1" disabled>→ Gửi sang Scanner</button>
+          </div>
+          <div class="card-head"><h3>Live Harvested URLs</h3></div>
+          <div id="scraper-list" class="result-list tall-list"><div class="empty">Chưa có URL nào — hãy nạp dorks và bấm Start Scrape.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PARSER ===== -->
+    <section id="view-parser" class="view">
+      <div class="grid-2">
+        <div class="card"><div class="card-head"><h3>URL input</h3><span class="pill" id="parser-in-count">0</span></div>
+          <textarea id="parser-input" class="output tall" placeholder="Dán list URL, mỗi dòng 1 URL…"></textarea>
+          <div class="field"><label>Lọc chỉ giữ đuôi web cụ thể (vd: php,asp,aspx,jsp,do,cfm — để trống = giữ hết)</label>
+            <div class="row gap">
+              <input id="parser-ext-filter" class="input small" placeholder="php,asp,aspx,jsp,do,cfm" value="php,asp,aspx,jsp,do,cfm">
+              <label class="check" title="Bỏ tick = parse hết mọi URL"><input type="checkbox" id="chk-parser-ext" checked><span>Lọc đuôi</span></label>
+            </div>
+          </div>
+          <div class="row gap"><button class="btn small" id="btn-parser-file">Import .txt</button><button class="btn small ghost" id="btn-parser-sample">Sample</button></div>
+        </div>
+        <div class="card"><div class="card-head"><h3>Tham số trích xuất</h3><span class="pill" id="parser-out-count">0 unique</span></div>
+          <textarea id="parser-output" class="output tall" readonly></textarea>
+          <div class="row gap"><button id="btn-parse" class="btn start">▶ Parse params</button><button id="btn-parser-save" class="btn save" disabled>💾 Save</button><button class="btn small ghost" id="btn-parser-copy">Copy</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SCANNER ===== -->
+    <section id="view-scanner" class="view">
+      <div class="grid-2">
+        <div class="card"><div class="card-head"><h3>Mục tiêu</h3><span class="pill" id="scanner-count">0 URLs</span></div>
+          <textarea id="scanner-input" class="output tall" placeholder="Dán URL có param, vd: http://site.com/page.php?id=1"></textarea>
+          <div class="row gap"><button class="btn small" id="btn-scanner-file">Import .txt</button>
+            <select id="scanner-payload" class="input"><option value="basic">Basic ( ' &quot; )</option><option value="union">UNION probe</option><option value="time">Time-based probe</option><option value="db">Full DB (tự chọn theo engine)</option></select>
+          </div>
+          <div class="two">
+            <div class="field"><label>Ưu tiên DB engine</label>
+              <select id="scanner-db" class="input small">
+                <option value="all" selected>Tất cả (tự nhận diện)</option>
+                <option value="mysql">MySQL / MariaDB</option>
+                <option value="mssql">MSSQL</option>
+                <option value="pgsql">PostgreSQL</option>
+                <option value="oracle">Oracle</option>
+                <option value="sqlite">SQLite</option>
+              </select>
+            </div>
+            <div class="field"><label>Chỉ scan đuôi</label><input id="scanner-ext-filter" class="input small" placeholder="để trống = scan hết" value="php,asp,aspx,jsp,do,cfm"></div>
+          </div>
+          <small class="muted">Dùng chung proxy + threads/timeout với Checker. Probe nhẹ, nhận diện DB qua error-signature (MySQL/MSSQL/PGSQL/Oracle/SQLite). Đồng bộ với preset DB ở Dork Maker.</small>
+        </div>
+        <div class="card"><div class="card-head"><h3>Kết quả scan</h3><span class="status" id="scanner-status">Ready</span></div>
+          <div class="progress big"><div id="scanner-bar" style="width:0%"></div></div>
+          <div id="scanner-list" class="result-list"><div class="empty">Chưa scan.</div></div>
+          <div class="row gap"><button id="btn-start-scanner" class="btn start">▶ Scan</button><button id="btn-save-vuln" class="btn save" disabled>💾 Save Vuln</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROXIES ===== -->
+    <section id="view-proxies" class="view">
+      <div class="grid-proxy">
+        <div class="card">
+          <div class="card-head"><h3>Nhập proxy đa định dạng</h3><span class="pill" id="proxy-total-pill">0</span></div>
+          <div class="row gap">
+            <select id="proxy-default-type" class="input" title="Áp dụng khi dòng không ghi scheme">
+              <option value="auto" selected>Mặc định: Auto (http → thử)</option>
+              <option value="http">Mặc định: http</option>
+              <option value="socks4">Mặc định: socks4</option>
+              <option value="socks5">Mặc định: socks5</option>
+            </select>
+            <button class="btn small" id="btn-proxy-file">Import file</button>
+          </div>
+          <textarea id="proxy-paste" class="output" placeholder="Dán proxy, mỗi dòng 1 con. VD:&#10;127.0.0.1:8080&#10;http://127.0.0.1:8080&#10;socks5://127.0.0.1:1080&#10;user:pass@127.0.0.1:8080&#10;127.0.0.1:8080:user:pass&#10;127.0.0.1:8080|user|pass"></textarea>
+          <div class="row gap">
+            <button id="btn-proxy-add-paste" class="btn start">＋ Thêm list</button>
+            <button id="btn-proxy-clear" class="btn danger">Xóa hết</button>
+            <button id="btn-proxy-dedupe" class="btn ghost">Lọc trùng</button>
+          </div>
+          <div class="format-help">
+            <b>Format hỗ trợ:</b>
+            <code>ip:port</code><code>http://ip:port</code><code>https://ip:port</code><code>socks4://ip:port</code><code>socks5://ip:port</code><code>socks5h://ip:port</code><code>user:pass@ip:port</code><code>ip:port:user:pass</code><code>ip:port|user|pass</code>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h3>Kiểm tra sống / chết</h3><span class="status" id="proxy-test-status">Ready</span></div>
+            <div class="row gap">
+              <select id="proxy-test-url" class="input">
+                <option value="http://httpbin.org/ip">httpbin.org/ip (nhẹ)</option>
+                <option value="https://api.ipify.org?format=json">api.ipify.org (https)</option>
+                <option value="https://www.google.com/generate_204">google generate_204</option>
+              </select>
+            </div>
+            <div class="row gap">
+              <button id="btn-proxy-test" class="btn start">▶ Test all</button>
+              <button id="btn-proxy-stop" class="btn danger" disabled>■ Stop</button>
+              <button id="btn-proxy-export-live" class="btn save" disabled>💾 Xuất live</button>
+            </div>
+            <div class="progress big"><div id="proxy-bar" style="width:0%"></div></div>
+            <div class="meter"><span class="ok" id="proxy-live-text">Live: 0</span><span class="bad" id="proxy-dead-text">Dead: 0</span><span class="muted" id="proxy-ms">— ms</span></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Danh sách (<span id="proxy-list-count">0</span>)</h3>
+              <input id="proxy-search" class="input small" placeholder="Tìm ip / port…">
+            </div>
+            <div id="proxy-list" class="result-list tall-list"><div class="empty">Chưa có proxy. Import file hoặc dán list.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== UTILS ===== -->
+    <section id="view-utils" class="view">
+      <div class="grid-3">
+        <div class="card"><h3>Làm sạch list</h3>
+          <textarea id="util-input" class="output" placeholder="Dán list cần xử lý…"></textarea>
+          <div class="row gap wrap">
+            <button class="btn small" data-util="dedupe">Dedupe</button>
+            <button class="btn small" data-util="sort">Sort A→Z</button>
+            <button class="btn small" data-util="clean">Xóa dòng trống</button>
+            <button class="btn small" data-util="lower">lowercase</button>
+            <button class="btn small" data-util="shuffle">Shuffle</button>
+          </div>
+          <div class="kv"><span>Kết quả</span><b id="util-count">0</b></div>
+          <textarea id="util-output" class="output" readonly></textarea>
+          <div class="row gap"><button class="btn small ghost" id="btn-util-copy">Copy</button><button class="btn small save" id="btn-util-save">Save</button></div>
+        </div>
+        <div class="card"><h3>AntiPublic nhanh</h3><p class="muted">Tách <code>user:pass</code> / <code>email:pass</code> → chỉ giữ domain hoặc user.</p>
+          <div class="row gap wrap"><button class="btn small" data-anti="domain">Giữ domain</button><button class="btn small" data-anti="user">Giữ user</button><button class="btn small" data-anti="combo-only">Chỉ dòng có :</button></div>
+          <small class="muted">Dùng chung ô input/output bên trái.</small>
+          <hr><h3>Xuất / nhập nhanh</h3>
+          <div class="row gap"><button class="btn small" id="btn-export-all">Xuất session (.json)</button><button class="btn small ghost" id="btn-reset-all">Reset all</button></div>
+        </div>
+        <div class="card"><h3>Phím tắt & mẹo</h3>
+          <ul class="tips">
+            <li><b>Ctrl+Enter</b> trong ô dán proxy = thêm nhanh</li>
+            <li>Proxy không scheme → dùng “Mặc định” đã chọn</li>
+            <li>Checker tự bỏ qua proxy dead nếu đã test</li>
+            <li>Threads 10–20 là ngọt nhất, timeout 8s</li>
+            <li>Rotation <b>sticky</b> hợp với proxy private ít con</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Log console -->
+    <footer class="console-card">
+      <div class="console-head"><span>● ● ● &nbsp; LOG</span><span class="muted" id="log-count">0 dòng</span></div>
+      <div id="log" class="console"></div>
+    </footer>
+  </main>
+</div>
+
+<div id="toasts"></div>
+<script src="renderer.js"></script>
+<script src="i18n.js"></script>
+</body>
+</html>
+
+
